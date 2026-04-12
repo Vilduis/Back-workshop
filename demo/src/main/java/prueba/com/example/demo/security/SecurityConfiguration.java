@@ -16,8 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = {
-            // Solo login es público
-            "/api/users/login/**"
+            "/api/users/login/**",
+            "/api/health"          // endpoint publico para verificar que el servidor esta activo
     };
 
     @Autowired
