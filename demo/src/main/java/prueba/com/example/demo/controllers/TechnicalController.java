@@ -11,7 +11,7 @@ import prueba.com.example.demo.services.TechnicalService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("")
 @CrossOrigin("*")
 public class TechnicalController {
 

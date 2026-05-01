@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/dashboard")
 @CrossOrigin("*")
 public class DashboardController {
 

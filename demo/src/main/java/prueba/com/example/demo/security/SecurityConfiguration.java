@@ -16,8 +16,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = {
-            "/api/users/login/**",
-            "/api/health"          // endpoint publico para verificar que el servidor esta activo
+            "/users/login/**",
+            "/health",              // endpoint publico para verificar que el servidor esta activo
+            // Swagger / OpenAPI
+            "/docs/**",
+            "/docs",
+            "/docs-json/**",
+            "/docs-json"
     };
 
     @Autowired
@@ -39,10 +44,10 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(AUTH_WHITELIST).permitAll()
                 // Solo ADMIN puede crear usuarios y asignar roles
-                .requestMatchers("/api/users/register/**").hasAuthority("ADMIN")
+                .requestMatchers("/users/register/**").hasAuthority("ADMIN")
                 // Dashboard por rol
-                .requestMatchers("/api/dashboard/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/dashboard/tecnico/**").hasAnyAuthority("TECNICO", "ADMIN")
+                .requestMatchers("/dashboard/admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/dashboard/tecnico/**").hasAnyAuthority("TECNICO", "ADMIN")
                 .anyRequest().authenticated()
         );
 
