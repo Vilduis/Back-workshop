@@ -17,12 +17,15 @@ public class SecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = {
             "/users/login/**",
-            "/health",              // endpoint publico para verificar que el servidor esta activo
+            "/",                    // health check publico
             // Swagger / OpenAPI
             "/docs/**",
             "/docs",
             "/docs-json/**",
-            "/docs-json"
+            "/docs-json",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**"
     };
 
     @Autowired
