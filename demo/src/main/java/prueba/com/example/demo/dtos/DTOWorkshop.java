@@ -4,13 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class DTOUser {
+public class DTOWorkshop {
     private Long id;
+    private String workshopName;
+    private String ownerName;
     private String email;
+    private String phone;
+    private String address;
+    private String plan;
     private Boolean active;
-
-    private String authorities;  //ADMIN o TECNICO
 }

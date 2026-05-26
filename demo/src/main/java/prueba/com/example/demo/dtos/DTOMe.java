@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DTOToken {
-    private String jwtToken;
+public class DTOMe {
     private Long userId;
+    private String email;
+    private String displayName;
     private String authorities;
+    private Boolean active;
+    private Boolean mustChangePassword;
     private Long workshopId;
     private String workshopName;
-    private Boolean mustChangePassword;
 }

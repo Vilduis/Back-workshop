@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Config local (secretos en dev: API keys, contraseñas)
+application-local.properties
+application-local.yml
+.env
+.env.local

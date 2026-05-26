@@ -6,13 +6,14 @@ import prueba.com.example.demo.entities.Vehicles;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VehiclesRepository extends JpaRepository<Vehicles, Long> {
-    List<Vehicles> findByCustomerId(Long customerId);
-    Vehicles findByPlate(String plate);
+    List<Vehicles> findAllByWorkshopId(Long workshopId);
+    Optional<Vehicles> findByIdAndWorkshopId(Long id, Long workshopId);
+    List<Vehicles> findByCustomerIdAndWorkshopId(Long customerId, Long workshopId);
 
-    // Dashboard: vehículos registrados en un rango de fechas
-    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countByWorkshopId(Long workshopId);
+    long countByWorkshopIdAndCreatedAtBetween(Long workshopId, LocalDateTime start, LocalDateTime end);
 }
-

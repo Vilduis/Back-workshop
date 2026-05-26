@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import prueba.com.example.demo.dtos.DTOCustomer;
 import prueba.com.example.demo.entities.Customer;
+import prueba.com.example.demo.entities.Workshop;
 import prueba.com.example.demo.exceptions.ResourceNotFoundException;
 import prueba.com.example.demo.repositories.CustomerRepository;
+import prueba.com.example.demo.repositories.WorkshopRepository;
+import prueba.com.example.demo.security.TenantContext;
 import prueba.com.example.demo.services.CustomerService;
 
 import java.util.List;
@@ -14,21 +17,29 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
-    CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private WorkshopRepository workshopRepository;
 
     @Override
     public Customer findById(Long id) {
-        return customerRepository.findById(id)
+        Long workshopId = TenantContext.requireWorkshopId();
+        return customerRepository.findByIdAndWorkshopId(id, workshopId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id: " + id + " not found"));
     }
 
     @Override
     public Customer insertCustomer(DTOCustomer dto) {
+        Long workshopId = TenantContext.requireWorkshopId();
+        Workshop workshop = workshopRepository.getReferenceById(workshopId);
+
         Customer customer = new Customer();
         customer.setName(dto.getName());
         customer.setLastName(dto.getLastName());
         customer.setPhone(dto.getPhone());
         customer.setEmail(dto.getEmail());
+        customer.setWorkshop(workshop);
         return customerRepository.save(customer);
     }
 
@@ -44,7 +55,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Customer> listAllCustomers() {
-        return customerRepository.findAll();
+        Long workshopId = TenantContext.requireWorkshopId();
+        return customerRepository.findAllByWorkshopId(workshopId);
     }
 
     @Override
@@ -53,4 +65,3 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.delete(found);
     }
 }
-

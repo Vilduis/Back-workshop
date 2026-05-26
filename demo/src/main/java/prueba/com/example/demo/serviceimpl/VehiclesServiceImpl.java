@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import prueba.com.example.demo.dtos.DTOVehicles;
 import prueba.com.example.demo.entities.Vehicles;
+import prueba.com.example.demo.entities.Workshop;
 import prueba.com.example.demo.exceptions.ResourceNotFoundException;
 import prueba.com.example.demo.repositories.VehiclesRepository;
+import prueba.com.example.demo.repositories.WorkshopRepository;
+import prueba.com.example.demo.security.TenantContext;
 import prueba.com.example.demo.services.CustomerService;
 import prueba.com.example.demo.services.VehiclesService;
 
@@ -15,25 +18,33 @@ import java.util.List;
 public class VehiclesServiceImpl implements VehiclesService {
 
     @Autowired
-    VehiclesRepository vehiclesRepository;
+    private VehiclesRepository vehiclesRepository;
 
     @Autowired
-    CustomerService customerService;
+    private WorkshopRepository workshopRepository;
+
+    @Autowired
+    private CustomerService customerService;
 
     @Override
     public Vehicles findById(Long id) {
-        return vehiclesRepository.findById(id)
+        Long workshopId = TenantContext.requireWorkshopId();
+        return vehiclesRepository.findByIdAndWorkshopId(id, workshopId)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle with id: " + id + " not found"));
     }
 
     @Override
     public Vehicles insertVehicle(DTOVehicles dto) {
+        Long workshopId = TenantContext.requireWorkshopId();
+        Workshop workshop = workshopRepository.getReferenceById(workshopId);
+
         Vehicles vehicle = new Vehicles();
         vehicle.setPlate(dto.getPlate());
         vehicle.setBrand(dto.getBrand());
         vehicle.setModel(dto.getModel());
         vehicle.setYear(dto.getYear());
         vehicle.setCustomer(customerService.findById(dto.getCustomerId()));
+        vehicle.setWorkshop(workshop);
         return vehiclesRepository.save(vehicle);
     }
 
@@ -52,12 +63,14 @@ public class VehiclesServiceImpl implements VehiclesService {
 
     @Override
     public List<Vehicles> listAllVehicles() {
-        return vehiclesRepository.findAll();
+        Long workshopId = TenantContext.requireWorkshopId();
+        return vehiclesRepository.findAllByWorkshopId(workshopId);
     }
 
     @Override
     public List<Vehicles> findByCustomerId(Long customerId) {
-        return vehiclesRepository.findByCustomerId(customerId);
+        Long workshopId = TenantContext.requireWorkshopId();
+        return vehiclesRepository.findByCustomerIdAndWorkshopId(customerId, workshopId);
     }
 
     @Override
@@ -66,4 +79,3 @@ public class VehiclesServiceImpl implements VehiclesService {
         vehiclesRepository.delete(found);
     }
 }
-

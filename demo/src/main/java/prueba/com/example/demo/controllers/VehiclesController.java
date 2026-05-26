@@ -3,6 +3,7 @@ package prueba.com.example.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import prueba.com.example.demo.dtos.DTOVehicles;
 import prueba.com.example.demo.entities.Vehicles;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("")
 @CrossOrigin("*")
+@PreAuthorize("hasAuthority('TECHNICAL') or hasAuthority('ADMIN')")
 public class VehiclesController {
 
     @Autowired

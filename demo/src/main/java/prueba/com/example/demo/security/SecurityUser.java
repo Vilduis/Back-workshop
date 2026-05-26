@@ -41,4 +41,10 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isEnabled() { return user.getActive(); }
+
+    public Long getUserId() { return user.getId(); }
+
+    public Long getWorkshopId() {
+        return user.getWorkshop() != null ? user.getWorkshop().getId() : null;
+    }
 }

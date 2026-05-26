@@ -25,6 +25,11 @@ public class Vehicles {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "workshop_id", nullable = false)
+    private Workshop workshop;
+
     private LocalDateTime createdAt;
 
     @PrePersist

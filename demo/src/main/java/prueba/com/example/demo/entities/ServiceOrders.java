@@ -31,6 +31,11 @@ public class ServiceOrders {
     @JoinColumn(name = "technical_id")
     private Technical technical;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "workshop_id", nullable = false)
+    private Workshop workshop;
+
     private String diagnosis;
 
     @Enumerated(EnumType.STRING)

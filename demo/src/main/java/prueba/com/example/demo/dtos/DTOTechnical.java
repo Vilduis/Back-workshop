@@ -12,5 +12,4 @@ public class DTOTechnical {
     private String name;
     private String lastName;
     private String specialty;
-    private Long userId;  // FK al usuario del sistema (rol TÉCNICO)
 }

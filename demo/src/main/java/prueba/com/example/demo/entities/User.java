@@ -12,15 +12,26 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-@Table(name="users")
-
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_users_email", columnNames = "email")
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
+
+    @JsonIgnore
     private String password;
     private Boolean active;
+
+    @Column(name = "must_change_password", nullable = false)
+    private Boolean mustChangePassword;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "workshop_id", nullable = false)
+    private Workshop workshop;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
@@ -29,4 +40,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "authority_id"))
 
     private List<Authority> authorities;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.active == null) this.active = true;
+        if (this.mustChangePassword == null) this.mustChangePassword = false;
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,10 +14,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = {
-            "/users/login/**",
+            "/auth/register-workshop",
+            "/auth/login",
+            "/auth/forgot-password",
+            "/auth/reset-password",
             "/",                    // health check publico
             // Swagger / OpenAPI
             "/docs/**",
@@ -46,20 +51,11 @@ public class SecurityConfiguration {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(AUTH_WHITELIST).permitAll()
-                // Solo ADMIN puede crear usuarios y asignar roles
-                .requestMatchers("/users/register/**").hasAuthority("ADMIN")
-                // Dashboard por rol
-                .requestMatchers("/dashboard/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/dashboard/tecnico/**").hasAnyAuthority("TECNICO", "ADMIN")
                 .anyRequest().authenticated()
         );
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
-
     }
-
-
-
 }

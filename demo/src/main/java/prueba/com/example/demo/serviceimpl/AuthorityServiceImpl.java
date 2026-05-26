@@ -14,16 +14,6 @@ public class AuthorityServiceImpl implements AuthorityService {
     AuthorityRepository authorityRepository;
 
     @Override
-    public Authority insertAuthority(Authority authority)
-    {
-        if(authority.getName()==null || authority.getName().isBlank())
-        {
-            throw new InvalidDataException("Authority name can not be blank");
-        }
-        return authorityRepository.save(authority);
-    }
-
-    @Override
     public Authority findByName(String name)
     {
         Authority authorityFound= authorityRepository.findByName(name);

@@ -5,12 +5,14 @@ import org.springframework.stereotype.Repository;
 import prueba.com.example.demo.entities.Customer;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    Customer findByEmail(String email);
+    List<Customer> findAllByWorkshopId(Long workshopId);
+    Optional<Customer> findByIdAndWorkshopId(Long id, Long workshopId);
 
-    // Dashboard: clientes registrados en un rango de fechas
-    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countByWorkshopId(Long workshopId);
+    long countByWorkshopIdAndCreatedAtBetween(Long workshopId, LocalDateTime start, LocalDateTime end);
 }
-

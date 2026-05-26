@@ -21,6 +21,11 @@ public class Customer {
     private String phone;
     private String email;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "workshop_id", nullable = false)
+    private Workshop workshop;
+
     private LocalDateTime createdAt;
 
     @PrePersist

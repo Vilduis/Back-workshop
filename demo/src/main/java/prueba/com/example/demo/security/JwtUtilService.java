@@ -40,6 +40,12 @@ public class JwtUtilService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Long extractWorkshopId(String token) {
+        Object value = extractAllClaims(token).get("workshopId");
+        if (value == null) return null;
+        return Long.valueOf(value.toString());
+    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -67,6 +73,8 @@ public class JwtUtilService {
         Map<String, Object> claims = new HashMap<>();
         Object authorities = securityUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
         claims.put("authorities", authorities);
+        claims.put("workshopId", securityUser.getWorkshopId());
+        claims.put("userId", securityUser.getUserId());
         return createToken(securityUser.getUsername(), claims);
     }
 }

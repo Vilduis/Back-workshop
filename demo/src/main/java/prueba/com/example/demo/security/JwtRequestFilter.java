@@ -32,26 +32,35 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String token = null;
+        Long workshopId = null;
 
         try {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 token = authorizationHeader.substring(7);
                 username = jwtUtilService.extractUsername(token);
+                workshopId = jwtUtilService.extractWorkshopId(token);
             }
         } catch (JwtException e) {
             // Token malformado, expirado o con firma inválida → devuelve 401
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            SecurityUser securityUser = (SecurityUser) userDetailsService.loadUserByUsername(username);
-            if (jwtUtilService.validateToken(token, securityUser)) {
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(securityUser, null, securityUser.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        try {
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                SecurityUser securityUser = (SecurityUser) userDetailsService.loadUserByUsername(username);
+                if (jwtUtilService.validateToken(token, securityUser)) {
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(securityUser, null, securityUser.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    if (workshopId != null) {
+                        TenantContext.setWorkshopId(workshopId);
+                    }
+                }
             }
+            chain.doFilter(request, response);
+        } finally {
+            TenantContext.clear();
         }
-        chain.doFilter(request, response);
     }
 
 }
