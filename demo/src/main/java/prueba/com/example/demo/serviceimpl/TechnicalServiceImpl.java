@@ -96,11 +96,23 @@ public class TechnicalServiceImpl implements TechnicalService {
     }
 
     @Override
+    @Transactional
     public Technical updateTechnical(DTOTechnical dto) {
         Technical found = findById(dto.getId());
         found.setName(dto.getName());
         found.setLastName(dto.getLastName());
         found.setSpecialty(dto.getSpecialty());
+
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()
+                && !dto.getEmail().equals(found.getUser().getEmail())) {
+            User existing = userRepository.findByEmail(dto.getEmail());
+            if (existing != null && !existing.getId().equals(found.getUser().getId())) {
+                throw new InvalidDataException("Ya existe un usuario con ese email");
+            }
+            found.getUser().setEmail(dto.getEmail());
+            userRepository.save(found.getUser());
+        }
+
         return technicalRepository.save(found);
     }
 

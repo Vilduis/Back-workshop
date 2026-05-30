@@ -12,4 +12,5 @@ public class DTOTechnical {
     private String name;
     private String lastName;
     private String specialty;
+    private String email;
 }

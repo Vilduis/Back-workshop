@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import prueba.com.example.demo.dtos.DTOUser;
 import prueba.com.example.demo.entities.User;
+import prueba.com.example.demo.exceptions.InvalidDataException;
 import prueba.com.example.demo.exceptions.ResourceNotFoundException;
 import prueba.com.example.demo.repositories.UserRepository;
 import prueba.com.example.demo.security.SecurityUser;
@@ -45,7 +46,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User updateUser(DTOUser dtoUser) {
         User userFound = findById(dtoUser.getId());
-        userFound.setEmail(dtoUser.getEmail());
+        if (dtoUser.getEmail() != null && !dtoUser.getEmail().isBlank()
+                && !dtoUser.getEmail().equals(userFound.getEmail())) {
+            User existing = userRepository.findByEmail(dtoUser.getEmail());
+            if (existing != null && !existing.getId().equals(userFound.getId())) {
+                throw new InvalidDataException("Ya existe un usuario con ese email");
+            }
+            userFound.setEmail(dtoUser.getEmail());
+        }
         if (dtoUser.getActive() != null) {
             userFound.setActive(dtoUser.getActive());
         }
